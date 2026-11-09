@@ -4,7 +4,11 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
+import com.spring.hibernate_demo.dao.AppDao;
 import com.spring.hibernate_demo.dao.StudentDao;
+import com.spring.hibernate_demo.entity.Course;
+import com.spring.hibernate_demo.entity.Instructor;
+import com.spring.hibernate_demo.entity.InstructorDetail;
 import com.spring.hibernate_demo.entity.Student;
 
 import java.util.List;
@@ -34,16 +38,33 @@ public class HibernateDemoApplication {
      * @return a {@link CommandLineRunner} callback lambda
      */
 	@Bean 
-	CommandLineRunner CommandLineRunner(StudentDao studentDao) {
+	// CommandLineRunner CommandLineRunner(StudentDao studentDao) {
+	// 	return runner -> {
+
+	CommandLineRunner CommandLineRunner(AppDao app) {
 		return runner -> {
 			// System.out.println("Hello World");
-			createStudent(studentDao);
+
+			// createStudent(studentDao);
 			// readStudent(studentDao);
 			// queryStudents(studentDao);
 			// queryStudentLastName(studentDao);
 			// updateStudent(studentDao);
 			// deleteStudent(studentDao);
 			// deleteAllStudent(studentDao);
+
+			// createInstructor(app);
+			// findInstructor(app);
+			// deleteInstructor(app);
+			// findInstructorDetail(app);
+			// deleteInstructorDetail(app);
+			// createInstructorWithCourses(app);
+			// findInstructorWithCourses(app);
+			// findCoursesForInstructor(app);
+			// findInstructorWithCoursesJoinFetch(app);
+			// updateInstructor(app);
+			// deleteInstructorOnly(app);
+			deleteCourseOnly(app);
 		};
 	}
 
@@ -54,8 +75,8 @@ public class HibernateDemoApplication {
      */
 	private void createStudent(StudentDao studentDao){
 		System.out.println("Creating student information...");
-		Student student = new Student("ChieSan", 
-		"Mapulak", "ritchie.mapulak@example.com");
+		Student student = new Student("Rylee", 
+		"Erazo", "rylee.erazo@example.com");
 		
 		System.out.println("Saving student information...");
 		studentDao.save(student);
@@ -146,5 +167,136 @@ public class HibernateDemoApplication {
 		System.out.println("Deleting all student information...");
 		int rowsDeleted = studentDao.deleteAll();
 		System.out.println("Number of deleted rows: "+ rowsDeleted);
+	}
+
+	//Continuation
+	private void createInstructor(AppDao app){
+		
+		Instructor ins = new Instructor("Rylee", "Erazo", "rylee.erazo@example.com");
+		InstructorDetail deets = new InstructorDetail("Nihongo", "Solving sentence patterns");
+
+		ins.setInstructorDeets(deets);
+		
+		System.out.println("Information Saved!");
+		app.save(ins);
+	}
+
+	private void findInstructor(AppDao app) {
+		int id = 1; 
+		System.out.println("Find id: " + id);
+
+		Instructor ins= app.findInstructorById(id);
+
+		System.out.println("Instructor: " + ins);
+		System.out.println("Details: " + ins.getInstructorDeets());
+	}
+
+	private void deleteInstructor(AppDao app) {
+		int id = 23;
+		System.out.println("Delete id: " + id);
+
+		app.deleteInstructorId(id);
+		System.out.println("Deleted successfully!");
+	}
+
+	private void findInstructorDetail(AppDao app) {
+		
+		int id = 3;
+		InstructorDetail inDeets = app.findInstructorDetailById(id);
+
+		System.out.println("Details: " + inDeets);
+
+		System.out.println("Instructor: " + inDeets.getInstructor());
+	}
+
+	private void deleteInstructorDetail(AppDao app){
+		int id = 6;
+		System.out.println("Delete id: " + id);
+
+		app.deleteInstructorDetail(id);
+		System.out.println("Deleted Successfully!");
+	}
+
+	private void createInstructorWithCourses(AppDao app){
+
+		Instructor ins = new Instructor("Peri", "Winkle", "peri.winkle@gmail.com");
+
+		InstructorDetail deets = new InstructorDetail("Science", "Sprinkling Dust");
+
+		ins.setInstructorDeets(deets);
+
+		Course course1 = new Course("Physics");
+		Course course2 = new Course("Biology");
+
+		ins.add(course1);
+		ins.add(course2);
+
+		System.out.println("Courses saved: " + ins.getCourses());
+		app.save(ins);
+	}
+
+	private void findInstructorWithCourses(AppDao app) {
+		int id = 8;
+		System.out.println("Find instructor id: " + id);
+
+		Instructor ins = app.findInstructorById(id);
+
+		System.out.println("Instructor; " + ins);
+		System.out.println("Courses: " + ins.getCourses());
+	}
+
+	private void findCoursesForInstructor(AppDao app) {
+		int id = 8;
+
+		System.out.println("Find instructor id: " + id);
+		Instructor ins = app.findInstructorById(id);
+
+		System.out.println("Instructor: " + ins);
+		System.out.println("Courses from id: " + id);
+		List <Course> courses = app.findCoursesByInstructorId(id);
+
+		ins.setCourses(courses);
+
+		System.out.println(ins.getCourses());
+	}
+
+	private void findInstructorWithCoursesJoinFetch(AppDao app) {
+		
+		int id = 8;
+
+		System.out.println("Find instructor id: " + id);
+
+		Instructor ins = app.findInstructorByIdJoinFetch(id);
+
+		System.out.println("Instructor: " + ins);
+		System.out.println("Courses: " + ins.getCourses());
+	}	
+
+	private void updateInstructor(AppDao app) {
+		int id = 5;
+
+		System.out.println("Find instructor id: " + id);
+
+		Instructor ins = app.findInstructorById(id);
+
+		ins.setLastName("Cosma");
+		System.out.println("Updated!");
+		app.update(ins);
+	}
+
+	private void deleteInstructorOnly(AppDao app) {
+		int id= 9;
+		System.out.println("Delete instructor: " +id);
+
+		app.deleteInstructorById(id);
+		System.out.println("Deleted successfully!");
+	}	
+
+	private void deleteCourseOnly(AppDao app) {
+		int id= 6;
+
+		app.deleteCourseById(id);
+		System.out.println("Course id deleted: " + id);
+	
 	}
 }
