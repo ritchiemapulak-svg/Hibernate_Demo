@@ -23,7 +23,7 @@ public class Student {
 
     @Id 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id") 
+    @Column(name="id")
     private int id;
 
     @Column(name="first_name")
@@ -141,7 +141,7 @@ public class Student {
      *
      * @return a formatted string containing student details
      */
-    @Override 
+    @Override
     public String toString(){
         return "Student [id=" + id + 
         ", firstName = " +firstName+
@@ -149,6 +149,12 @@ public class Student {
         ", email = " +email+ "]";
     }
 
+    /**
+    * Adds a course to this student and enrolls the 
+    * student in that course.
+    *
+    * @param course the course to add
+    */
     public void addCourse(Course course){
         if(courses == null){
             courses = new ArrayList<>();
@@ -157,12 +163,21 @@ public class Student {
         course.addStudent(this);
     }
 
+    /**
+    * Gets the courses this student is enrolled in.
+    *
+    * @return the list of courses
+    */
     public List<Course> getCourses() {
         return courses;
     }
 
+    /**
+    * Sets the courses this student is enrolled in.
+    *
+    * @param courses the list of courses to set
+    */
     public void setCourses(List<Course> courses) {
         this.courses = courses;
     }
-    
 }

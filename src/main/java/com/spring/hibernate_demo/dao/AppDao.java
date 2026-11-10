@@ -7,6 +7,10 @@ import com.spring.hibernate_demo.entity.Instructor;
 import com.spring.hibernate_demo.entity.InstructorDetail;
 import com.spring.hibernate_demo.entity.Student;
 
+/**
+ * Data access operations for instructors, instructor details, courses,
+ * reviews, and students.
+ */
 public interface AppDao {
 
     void save(Instructor theInstructor);
